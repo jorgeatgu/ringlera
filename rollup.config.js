@@ -2,7 +2,11 @@
 import babel from 'rollup-plugin-babel';
 import { eslint } from 'rollup-plugin-eslint';
 import { terser } from 'rollup-plugin-terser';
-import commonjs from 'rollup-plugin-commonjs';
+import commonjs from '@rollup/plugin-commonjs';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
+import globals from 'rollup-plugin-node-globals';
+import builtins from 'rollup-plugin-node-builtins';
+
 
 // ------ postCSS
 import postcss from 'rollup-plugin-postcss';
@@ -14,8 +18,10 @@ import nested from 'postcss-nested';
 import stylelint from 'rollup-plugin-stylelint';
 
 // ------ global
-import resolve from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import browsersync from 'rollup-plugin-browsersync';
+
+
 
 const paths = {
   js: 'src/js',
@@ -35,9 +41,9 @@ const plugins = [
   babel({
     exclude: 'node_modules/**',
     include: paths.js + '/**',
-    presets: ['@babel/preset-env']
+    presets: ['@babel/preset-env'],
+    plugins: ["@babel/plugin-transform-async-to-generator"]
   }),
-  terser(),
   browsersync({
     host: 'localhost',
     port: 3000,
@@ -46,25 +52,23 @@ const plugins = [
     },
     files: [
       'src/**',
-      'data/*.*',
+      'csv/*.*',
       './*.html'
     ],
     open: true
   }),
   resolve(),
-  commonjs()
+  nodePolyfills(),
+  commonjs(),
+  globals(),
+  builtins()
 ];
 
 export default [{
     input: paths.js + '/index.js',
     output: [{
         file: paths.distJs + '/index.js',
-        format: 'esm'
-      },
-      {
-        file: paths.distJs + '/index.min.js',
-        format: 'iife',
-        name: 'version'
+        format: 'umd'
       }
     ],
     plugins
@@ -83,7 +87,7 @@ export default [{
   {
     input: paths.css + '/styles.css',
     output: {
-      file: paths.distCss + '/style.css',
+      file: paths.distCss + '/styles.css',
       format: 'es'
     },
     plugins: [
@@ -105,7 +109,7 @@ export default [{
   },
   {
     watch: {
-      include: ['src/**', './*.html', 'data/**']
+      include: ['src/**', './*.html', 'csv/**', 'js/**']
     }
   }
 ];
