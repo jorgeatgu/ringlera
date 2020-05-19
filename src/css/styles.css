@@ -1,3 +1,51 @@
+@import '_variables';
+
+.title {
+  font-family: var(--title);
+}
+
 .ringlera-chart {
+  position: relative;
   width: 100%;
+  .domain {
+    stroke: none;
+  }
+
+  text {
+    font-family: var(--roboto);
+    font-size: 10px;
+    stroke: none;
+  }
+
+  .tick line {
+    color: #ccc;
+    stroke-width: 1px;
+    stroke-dasharray: 3px 3px;
+  }
+  .book {
+    stroke-width: 8px;
+  }
+
+  .tooltip {
+    position: absolute;
+    z-index: 2;
+    margin-left: 10px;
+    padding: .5rem .75rem;
+    background: #fff;
+    border-radius: 4px;
+    width: 13rem;
+    box-shadow: 0 2px 9px 0 rgba(0, 0, 0, .2);
+    font-family: var(--text);
+  }
+
+  .tooltip-book-text {
+    margin: 0;
+    + p {
+      display: none;
+    }
+  }
+
+  .tooltip-book-title {
+    margin: 0;
+  }
 }

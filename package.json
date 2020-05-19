@@ -24,7 +24,6 @@
   "license": "MIT",
   "dependencies": {
     "@babel/core": "7.9.6",
-    "@babel/plugin-transform-async-to-generator": "^7.8.3",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-es2017": "^7.0.0-beta.53",
     "@rollup/plugin-commonjs": "^11.0.2",

@@ -39,10 +39,17 @@ const plugins = [
     ]
   }),
   babel({
+    babelrc: false,
     exclude: 'node_modules/**',
-    include: paths.js + '/**',
-    presets: ['@babel/preset-env'],
-    plugins: ["@babel/plugin-transform-async-to-generator"]
+    presets: [
+      [
+        '@babel/preset-env',
+        {
+          corejs: 3,
+          useBuiltIns: 'usage',
+        },
+      ],
+    ],
   }),
   browsersync({
     host: 'localhost',
@@ -68,7 +75,8 @@ export default [{
     input: paths.js + '/index.js',
     output: [{
         file: paths.distJs + '/index.js',
-        format: 'umd'
+        format: 'umd',
+        external: ['xmlToJson']
       }
     ],
     plugins
