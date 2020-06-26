@@ -1,5 +1,3 @@
-@import '_variables';
-
 .title {
   font-family: var(--title);
 }
@@ -7,26 +5,29 @@
 .ringlera-chart {
   position: relative;
   width: 100%;
-  .domain {
+}
+
+.ringlera-chart .domain {
     stroke: none;
   }
 
-  text {
+.ringlera-chart text {
     font-family: var(--roboto);
     font-size: 10px;
     stroke: none;
   }
 
-  .tick line {
+.ringlera-chart .tick line {
     color: #ccc;
     stroke-width: 1px;
     stroke-dasharray: 3px 3px;
   }
-  .book {
+
+.ringlera-chart .book {
     stroke-width: 8px;
   }
 
-  .tooltip {
+.ringlera-chart .tooltip {
     position: absolute;
     z-index: 2;
     margin-left: 10px;
@@ -38,14 +39,14 @@
     font-family: var(--text);
   }
 
-  .tooltip-book-text {
+.ringlera-chart .tooltip-book-text {
     margin: 0;
-    + p {
-      display: none;
-    }
   }
 
-  .tooltip-book-title {
+.ringlera-chart .tooltip-book-text + p {
+      display: none;
+    }
+
+.ringlera-chart .tooltip-book-title {
     margin: 0;
   }
-}

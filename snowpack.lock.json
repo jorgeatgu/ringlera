@@ -1,0 +1,15 @@
+{
+  "imports": {
+    "d3-array": "https://cdn.pika.dev/pin/d3-array@v2.4.0-btTHvJfuDGuPlSXMuFTF/d3-array.js",
+    "d3-axis": "https://cdn.pika.dev/pin/d3-axis@v1.0.12-5uFJwIBtfSoCeK9ISxfL/d3-axis.js",
+    "d3-collection": "https://cdn.pika.dev/pin/d3-collection@v1.0.7-jEWkOcIhhD6QeACSD9TU/d3-collection.js",
+    "d3-ease": "https://cdn.pika.dev/pin/d3-ease@v1.0.6-OX3dCbI7QwOhTpC8XM3B/d3-ease.js",
+    "d3-fetch": "https://cdn.pika.dev/pin/d3-fetch@v1.1.2-1I2rrk85597VXhHod6RT/d3-fetch.js",
+    "d3-format": "https://cdn.pika.dev/pin/d3-format@v1.4.4-0lqV8LvyWOzAvVcvVieb/d3-format.js",
+    "d3-scale": "https://cdn.pika.dev/pin/d3-scale@v3.2.1-u1wLbPRQ5h34pvV5PkbT/d3-scale.js",
+    "d3-selection": "https://cdn.pika.dev/pin/d3-selection@v1.4.1-gIacVFlqTvMdsiC6Zcww/d3-selection.js",
+    "d3-shape": "https://cdn.pika.dev/pin/d3-shape@v1.3.7-Biu1IXWLc0DpqLxTZVnc/d3-shape.js",
+    "d3-time-format": "https://cdn.pika.dev/pin/d3-time-format@v2.2.3-z9SZNNbsPj5R0HZS8CCq/d3-time-format.js",
+    "d3-transition": "https://cdn.pika.dev/pin/d3-transition@v1.3.2-y3opdUtaphIFuZtsQeiS/d3-transition.js"
+  }
+}
