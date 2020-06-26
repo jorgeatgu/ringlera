@@ -58,7 +58,6 @@ function formatBooksObject(books) {
     d.days = Math.abs(d.read - d.started) / 86400000;
     d.average = d.pages / d.days;
   });
-
   createNewObjectBooks(books);
 }
 
