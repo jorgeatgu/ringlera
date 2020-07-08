@@ -1,11 +1,22 @@
 @import '_reset';
 
+@font-face {
+    font-family: 'Emberly';
+    src: url('Emberly-Bold.eot'); /* IE9 Compat Modes */
+    src: url('Emberly-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Emberly-Bold.woff') format('woff'), /* Modern Browsers */
+         url('Emberly-Bold.ttf') format('truetype'); /* Safari, Android, iOS */
+             font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
 :root {
   --fontSystem: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Helvetica, sans-serif;
   --roboto: 'Roboto Condensed', sans-serif;
-  --title: 'DM Serif Display', serif;
-  --text: 'Muli', sans-serif;
-  --bg-color: #F3EFE5;
+  --title: 'Emberly', serif;
+  --text: 'Muli', serif;
+  --bg-color: #F6D77C;
   --txt-color: #1D1F20;
   --white: #fff;
   --black: #111;
@@ -19,6 +30,12 @@
 body {
   position: relative;
   background-color: var(--bg-color);
+  font-variant-ligatures: none;
+  -webkit-font-variant-ligatures: none;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
 }
 
 #header-container-illustration {
@@ -35,7 +52,7 @@ body {
   width: 100%;
   height: 100vh;
   position: relative;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 .header-container-center {
@@ -54,12 +71,13 @@ body {
 
 .header-container-title {
   font-family: var(--title);
-  margin-bottom: .5rem;
+  margin-bottom: 0;
   font-size: 48px;
   font-weight: 300;
   display: inline-block;
   vertical-align: middle;
   text-align: center;
+  line-height: 1;
 }
 
 .header-container-input {
@@ -91,6 +109,22 @@ body {
   border-bottom-right-radius: 4px;
   font-weight: 600;
   letter-spacing: 1px;
+}
+
+.ringlera-user {
+  background-color: #BE6F72;
+  margin: 0 auto;
+  max-width: 35rem;
+  border-radius: 4px;
+  color: #061529;
+  padding: 1rem;
+  font-size: 5rem;
+  font-family: var(--title);
+}
+
+.ringlera-user-icon {
+  width: 3.5rem;
+  height: 3.5rem;
 }
 
 .ringlera-chart {
@@ -155,18 +189,85 @@ body {
 }
 
 .ringlera-metrics {
-  padding: 6rem 0;
+  padding: 4rem 0;
   background-color: var(--white);
+  margin: 0 auto;
+}
+
+.ringlera-metrics-grid {
+  max-width: 60rem;
+  margin-top: 105px;
 }
 
 .ringlera-metrics-element {
-  width: 20rem;
-  border-radius: 4px;
-  background-color: #b8eae8;
-  padding: 1rem;
-  margin-left: 3rem;
-  margin-bottom: 3rem;
+  width: 80%;
+  box-sizing: border-box;
+  padding: 0 1rem;
+  padding-bottom: 5rem;
+}
+
+.ringlera-metrics-element-header {
+  border-bottom: 5px solid #638685;
+  display: block;
+}
+
+.ringlera-metrics-element-number {
   position: relative;
+}
+
+.ringlera-metrics-element-author {
+  padding: .5rem;
+  position: relative;
+  top: -1.35rem;
+  background-color: var(--white);
+  font-family: var(--text);
+  display: inline-block;
+}
+
+.ringlera-metrics-element-number-text {
+  font-size: 1.5rem;
+  font-family: var(--title);
+  position: relative;
+  z-index: 2;
+}
+
+.ringlera-metrics-element-number-square {
+  content: '';
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--white);
+  position: absolute;
+  transform: rotate(45deg);
+  z-index: 1;
+  border-radius: 20%;
+  left: -.45rem;
+}
+
+.ringlera-metrics-header {
+  text-align: right;
+}
+
+.ringlera-metrics-header-title {
+  font-size: 5rem;
+  font-family: var(--title);
+  line-height: 1;
+  margin: 0;
+}
+
+.ringlera-metrics-header-text {
+  font-family: var(--text);
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.ringlera-metrics-element-grid {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  grid-column-gap: 4rem;
+}
+
+.ringlera-metrics-element-addictive {
+  background-color: #b8eae8;
 }
 
 .ringlera-metrics-element-boring {
@@ -179,30 +280,20 @@ body {
 
 .ringlera-metrics-element-short {
   background-color: #b8eabd;
-
-  .ringlera-metrics-element-title {
-    font-size: 1.5rem;
-  }
 }
 
-.ringlera-metrics-element-icon,
-.ringlera-metrics-element-icon-small {
+.ringlera-metrics-element-icon {
   width: 2.5rem;
   height: 2.5rem;
   display: inline-block;
   margin-top: .5rem;
 }
 
-.ringlera-metrics-element-icon-small {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
 .ringlera-metrics-element-title {
   font-size: 2rem;
   font-family: var(--title);
   display: inline-block;
-  vertical-align: top;
+  vertical-align: middle;
   margin: 0;
 }
 
@@ -210,6 +301,7 @@ body {
   font-size: 14px;
   font-family: var(--roboto);
   margin: 0;
+  padding-top: 1rem;
 }
 
 /* https://codepen.io/jackrugile/pen/JddmaX */
@@ -340,5 +432,5 @@ body {
 }
 
 .ringlera-main {
-  display: none;
+  /*display: none;*/
 }
