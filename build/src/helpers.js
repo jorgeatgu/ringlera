@@ -39,6 +39,16 @@ function xmlToJson(xml) {
   }
 
   return obj;
+} //WTF: we need a function to format date XML-Rails API, kill me madafaka.
+
+
+function parseStrangeDateRailsAPI(string) {
+  const splitDate = stringDate => stringDate.split(' ');
+
+  const first = Object.values(string);
+  const second = splitDate(first[0]);
+  const third = new Date(`${second[1]} ${second[2]} ${second[5]}`);
+  return third;
 }
 
-export { xmlToJson };
+export { xmlToJson, parseStrangeDateRailsAPI };
