@@ -4,77 +4,71 @@ function Map() {}
 
 Map.prototype = map.prototype = {
   constructor: Map,
-  has: function (key) {
-    return prefix + key in this;
+  has: function(key) {
+    return (prefix + key) in this;
   },
-  get: function (key) {
+  get: function(key) {
     return this[prefix + key];
   },
-  set: function (key, value) {
+  set: function(key, value) {
     this[prefix + key] = value;
     return this;
   },
-  remove: function (key) {
+  remove: function(key) {
     var property = prefix + key;
     return property in this && delete this[property];
   },
-  clear: function () {
+  clear: function() {
     for (var property in this) if (property[0] === prefix) delete this[property];
   },
-  keys: function () {
+  keys: function() {
     var keys = [];
-
     for (var property in this) if (property[0] === prefix) keys.push(property.slice(1));
-
     return keys;
   },
-  values: function () {
+  values: function() {
     var values = [];
-
     for (var property in this) if (property[0] === prefix) values.push(this[property]);
-
     return values;
   },
-  entries: function () {
+  entries: function() {
     var entries = [];
-
-    for (var property in this) if (property[0] === prefix) entries.push({
-      key: property.slice(1),
-      value: this[property]
-    });
-
+    for (var property in this) if (property[0] === prefix) entries.push({key: property.slice(1), value: this[property]});
     return entries;
   },
-  size: function () {
+  size: function() {
     var size = 0;
-
     for (var property in this) if (property[0] === prefix) ++size;
-
     return size;
   },
-  empty: function () {
+  empty: function() {
     for (var property in this) if (property[0] === prefix) return false;
-
     return true;
   },
-  each: function (f) {
+  each: function(f) {
     for (var property in this) if (property[0] === prefix) f(this[property], property.slice(1), this);
   }
 };
 
 function map(object, f) {
-  var map = new Map(); // Copy constructor.
+  var map = new Map;
 
-  if (object instanceof Map) object.each(function (value, key) {
-    map.set(key, value);
-  }); // Index array by numeric index or specified key function.
+  // Copy constructor.
+  if (object instanceof Map) object.each(function(value, key) { map.set(key, value); });
+
+  // Index array by numeric index or specified key function.
   else if (Array.isArray(object)) {
-      var i = -1,
-          n = object.length,
-          o;
-      if (f == null) while (++i < n) map.set(i, object[i]);else while (++i < n) map.set(f(o = object[i], i, object), o);
-    } // Convert object to map.
-    else if (object) for (var key in object) map.set(key, object[key]);
+    var i = -1,
+        n = object.length,
+        o;
+
+    if (f == null) while (++i < n) map.set(i, object[i]);
+    else while (++i < n) map.set(f(o = object[i], i, object), o);
+  }
+
+  // Convert object to map.
+  else if (object) for (var key in object) map.set(key, object[key]);
+
   return map;
 }
 
@@ -108,53 +102,29 @@ function nest() {
       }
     }
 
-    valuesByKey.each(function (values, key) {
+    valuesByKey.each(function(values, key) {
       setResult(result, key, apply(values, depth, createResult, setResult));
     });
+
     return result;
   }
 
   function entries(map, depth) {
     if (++depth > keys.length) return map;
-    var array,
-        sortKey = sortKeys[depth - 1];
-    if (rollup != null && depth >= keys.length) array = map.entries();else array = [], map.each(function (v, k) {
-      array.push({
-        key: k,
-        values: entries(v, depth)
-      });
-    });
-    return sortKey != null ? array.sort(function (a, b) {
-      return sortKey(a.key, b.key);
-    }) : array;
+    var array, sortKey = sortKeys[depth - 1];
+    if (rollup != null && depth >= keys.length) array = map.entries();
+    else array = [], map.each(function(v, k) { array.push({key: k, values: entries(v, depth)}); });
+    return sortKey != null ? array.sort(function(a, b) { return sortKey(a.key, b.key); }) : array;
   }
 
   return nest = {
-    object: function (array) {
-      return apply(array, 0, createObject, setObject);
-    },
-    map: function (array) {
-      return apply(array, 0, createMap, setMap);
-    },
-    entries: function (array) {
-      return entries(apply(array, 0, createMap, setMap), 0);
-    },
-    key: function (d) {
-      keys.push(d);
-      return nest;
-    },
-    sortKeys: function (order) {
-      sortKeys[keys.length - 1] = order;
-      return nest;
-    },
-    sortValues: function (order) {
-      sortValues = order;
-      return nest;
-    },
-    rollup: function (f) {
-      rollup = f;
-      return nest;
-    }
+    object: function(array) { return apply(array, 0, createObject, setObject); },
+    map: function(array) { return apply(array, 0, createMap, setMap); },
+    entries: function(array) { return entries(apply(array, 0, createMap, setMap), 0); },
+    key: function(d) { keys.push(d); return nest; },
+    sortKeys: function(order) { sortKeys[keys.length - 1] = order; return nest; },
+    sortValues: function(order) { sortValues = order; return nest; },
+    rollup: function(f) { rollup = f; return nest; }
   };
 }
 
@@ -177,10 +147,11 @@ function setMap(map, key, value) {
 function Set() {}
 
 var proto = map.prototype;
+
 Set.prototype = set.prototype = {
   constructor: Set,
   has: proto.has,
-  add: function (value) {
+  add: function(value) {
     value += "";
     this[prefix + value] = value;
     return this;
@@ -194,44 +165,19 @@ Set.prototype = set.prototype = {
 };
 
 function set(object, f) {
-  var set = new Set(); // Copy constructor.
+  var set = new Set;
 
-  if (object instanceof Set) object.each(function (value) {
-    set.add(value);
-  }); // Otherwise, assume it’s an array.
+  // Copy constructor.
+  if (object instanceof Set) object.each(function(value) { set.add(value); });
+
+  // Otherwise, assume it’s an array.
   else if (object) {
-      var i = -1,
-          n = object.length;
-      if (f == null) while (++i < n) set.add(object[i]);else while (++i < n) set.add(f(object[i], i, object));
-    }
+    var i = -1, n = object.length;
+    if (f == null) while (++i < n) set.add(object[i]);
+    else while (++i < n) set.add(f(object[i], i, object));
+  }
+
   return set;
 }
 
-function keys(map) {
-  var keys = [];
-
-  for (var key in map) keys.push(key);
-
-  return keys;
-}
-
-function values(map) {
-  var values = [];
-
-  for (var key in map) values.push(map[key]);
-
-  return values;
-}
-
-function entries(map) {
-  var entries = [];
-
-  for (var key in map) entries.push({
-    key: key,
-    value: map[key]
-  });
-
-  return entries;
-}
-
-export { entries, keys, map, nest, set, values };
+export { nest };

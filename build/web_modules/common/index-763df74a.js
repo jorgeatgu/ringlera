@@ -1,4 +1,5 @@
 var xhtml = "http://www.w3.org/1999/xhtml";
+
 var namespaces = {
   svg: "http://www.w3.org/2000/svg",
   xhtml: xhtml,
@@ -8,38 +9,38 @@ var namespaces = {
 };
 
 function namespace(name) {
-  var prefix = name += "",
-      i = prefix.indexOf(":");
+  var prefix = name += "", i = prefix.indexOf(":");
   if (i >= 0 && (prefix = name.slice(0, i)) !== "xmlns") name = name.slice(i + 1);
-  return namespaces.hasOwnProperty(prefix) ? {
-    space: namespaces[prefix],
-    local: name
-  } : name;
+  return namespaces.hasOwnProperty(prefix) ? {space: namespaces[prefix], local: name} : name;
 }
 
 function creatorInherit(name) {
-  return function () {
+  return function() {
     var document = this.ownerDocument,
         uri = this.namespaceURI;
-    return uri === xhtml && document.documentElement.namespaceURI === xhtml ? document.createElement(name) : document.createElementNS(uri, name);
+    return uri === xhtml && document.documentElement.namespaceURI === xhtml
+        ? document.createElement(name)
+        : document.createElementNS(uri, name);
   };
 }
 
 function creatorFixed(fullname) {
-  return function () {
+  return function() {
     return this.ownerDocument.createElementNS(fullname.space, fullname.local);
   };
 }
 
 function creator(name) {
   var fullname = namespace(name);
-  return (fullname.local ? creatorFixed : creatorInherit)(fullname);
+  return (fullname.local
+      ? creatorFixed
+      : creatorInherit)(fullname);
 }
 
 function none() {}
 
 function selector(selector) {
-  return selector == null ? none : function () {
+  return selector == null ? none : function() {
     return this.querySelector(selector);
   };
 }
@@ -64,7 +65,7 @@ function empty() {
 }
 
 function selectorAll(selector) {
-  return selector == null ? empty : function () {
+  return selector == null ? empty : function() {
     return this.querySelectorAll(selector);
   };
 }
@@ -85,7 +86,7 @@ function selection_selectAll(select) {
 }
 
 function matcher(selector) {
-  return function () {
+  return function() {
     return this.matches(selector);
   };
 }
@@ -122,22 +123,14 @@ function EnterNode(parent, datum) {
 
 EnterNode.prototype = {
   constructor: EnterNode,
-  appendChild: function (child) {
-    return this._parent.insertBefore(child, this._next);
-  },
-  insertBefore: function (child, next) {
-    return this._parent.insertBefore(child, next);
-  },
-  querySelector: function (selector) {
-    return this._parent.querySelector(selector);
-  },
-  querySelectorAll: function (selector) {
-    return this._parent.querySelectorAll(selector);
-  }
+  appendChild: function(child) { return this._parent.insertBefore(child, this._next); },
+  insertBefore: function(child, next) { return this._parent.insertBefore(child, next); },
+  querySelector: function(selector) { return this._parent.querySelector(selector); },
+  querySelectorAll: function(selector) { return this._parent.querySelectorAll(selector); }
 };
 
 function constant(x) {
-  return function () {
+  return function() {
     return x;
   };
 }
@@ -148,10 +141,11 @@ function bindIndex(parent, group, enter, update, exit, data) {
   var i = 0,
       node,
       groupLength = group.length,
-      dataLength = data.length; // Put any non-null nodes that fit into update.
+      dataLength = data.length;
+
+  // Put any non-null nodes that fit into update.
   // Put any null nodes into enter.
   // Put any remaining data into enter.
-
   for (; i < dataLength; ++i) {
     if (node = group[i]) {
       node.__data__ = data[i];
@@ -159,9 +153,9 @@ function bindIndex(parent, group, enter, update, exit, data) {
     } else {
       enter[i] = new EnterNode(parent, data[i]);
     }
-  } // Put any non-null nodes that don’t fit into exit.
+  }
 
-
+  // Put any non-null nodes that don’t fit into exit.
   for (; i < groupLength; ++i) {
     if (node = group[i]) {
       exit[i] = node;
@@ -176,27 +170,26 @@ function bindKey(parent, group, enter, update, exit, data, key) {
       groupLength = group.length,
       dataLength = data.length,
       keyValues = new Array(groupLength),
-      keyValue; // Compute the key for each node.
-  // If multiple nodes have the same key, the duplicates are added to exit.
+      keyValue;
 
+  // Compute the key for each node.
+  // If multiple nodes have the same key, the duplicates are added to exit.
   for (i = 0; i < groupLength; ++i) {
     if (node = group[i]) {
       keyValues[i] = keyValue = keyPrefix + key.call(node, node.__data__, i, group);
-
       if (keyValue in nodeByKeyValue) {
         exit[i] = node;
       } else {
         nodeByKeyValue[keyValue] = node;
       }
     }
-  } // Compute the key for each datum.
+  }
+
+  // Compute the key for each datum.
   // If there a node associated with this key, join and add it to update.
   // If there is not (or the key is a duplicate), add it to enter.
-
-
   for (i = 0; i < dataLength; ++i) {
     keyValue = keyPrefix + key.call(parent, data[i], i, data);
-
     if (node = nodeByKeyValue[keyValue]) {
       update[i] = node;
       node.__data__ = data[i];
@@ -204,11 +197,11 @@ function bindKey(parent, group, enter, update, exit, data, key) {
     } else {
       enter[i] = new EnterNode(parent, data[i]);
     }
-  } // Add any remaining nodes that were not bound to data to exit.
+  }
 
-
+  // Add any remaining nodes that were not bound to data to exit.
   for (i = 0; i < groupLength; ++i) {
-    if ((node = group[i]) && nodeByKeyValue[keyValues[i]] === node) {
+    if ((node = group[i]) && (nodeByKeyValue[keyValues[i]] === node)) {
       exit[i] = node;
     }
   }
@@ -217,15 +210,14 @@ function bindKey(parent, group, enter, update, exit, data, key) {
 function selection_data(value, key) {
   if (!value) {
     data = new Array(this.size()), j = -1;
-    this.each(function (d) {
-      data[++j] = d;
-    });
+    this.each(function(d) { data[++j] = d; });
     return data;
   }
 
   var bind = key ? bindKey : bindIndex,
       parents = this._parents,
       groups = this._groups;
+
   if (typeof value !== "function") value = constant(value);
 
   for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
@@ -237,16 +229,16 @@ function selection_data(value, key) {
         enterGroup = enter[j] = new Array(dataLength),
         updateGroup = update[j] = new Array(dataLength),
         exitGroup = exit[j] = new Array(groupLength);
-    bind(parent, group, enterGroup, updateGroup, exitGroup, data, key); // Now connect the enter nodes to their following update node, such that
+
+    bind(parent, group, enterGroup, updateGroup, exitGroup, data, key);
+
+    // Now connect the enter nodes to their following update node, such that
     // appendChild can insert the materialized enter node before this node,
     // rather than at the end of the parent node.
-
     for (var i0 = 0, i1 = 0, previous, next; i0 < dataLength; ++i0) {
       if (previous = enterGroup[i0]) {
         if (i0 >= i1) i1 = i0 + 1;
-
         while (!(next = updateGroup[i1]) && ++i1 < dataLength);
-
         previous._next = next || null;
       }
     }
@@ -263,16 +255,15 @@ function selection_exit() {
 }
 
 function selection_join(onenter, onupdate, onexit) {
-  var enter = this.enter(),
-      update = this,
-      exit = this.exit();
+  var enter = this.enter(), update = this, exit = this.exit();
   enter = typeof onenter === "function" ? onenter(enter) : enter.append(onenter + "");
   if (onupdate != null) update = onupdate(update);
-  if (onexit == null) exit.remove();else onexit(exit);
+  if (onexit == null) exit.remove(); else onexit(exit);
   return enter && update ? enter.merge(update).order() : update;
 }
 
 function selection_merge(selection) {
+
   for (var groups0 = this._groups, groups1 = selection._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
     for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
       if (node = group0[i] || group1[i]) {
@@ -289,6 +280,7 @@ function selection_merge(selection) {
 }
 
 function selection_order() {
+
   for (var groups = this._groups, j = -1, m = groups.length; ++j < m;) {
     for (var group = groups[j], i = group.length - 1, next = group[i], node; --i >= 0;) {
       if (node = group[i]) {
@@ -314,7 +306,6 @@ function selection_sort(compare) {
         sortgroup[i] = node;
       }
     }
-
     sortgroup.sort(compareNode);
   }
 
@@ -333,15 +324,13 @@ function selection_call() {
 }
 
 function selection_nodes() {
-  var nodes = new Array(this.size()),
-      i = -1;
-  this.each(function () {
-    nodes[++i] = this;
-  });
+  var nodes = new Array(this.size()), i = -1;
+  this.each(function() { nodes[++i] = this; });
   return nodes;
 }
 
 function selection_node() {
+
   for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
     for (var group = groups[j], i = 0, n = group.length; i < n; ++i) {
       var node = group[i];
@@ -354,9 +343,7 @@ function selection_node() {
 
 function selection_size() {
   var size = 0;
-  this.each(function () {
-    ++size;
-  });
+  this.each(function() { ++size; });
   return size;
 }
 
@@ -365,6 +352,7 @@ function selection_empty() {
 }
 
 function selection_each(callback) {
+
   for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
     for (var group = groups[j], i = 0, n = group.length, node; i < n; ++i) {
       if (node = group[i]) callback.call(node, node.__data__, i, group);
@@ -375,40 +363,42 @@ function selection_each(callback) {
 }
 
 function attrRemove(name) {
-  return function () {
+  return function() {
     this.removeAttribute(name);
   };
 }
 
 function attrRemoveNS(fullname) {
-  return function () {
+  return function() {
     this.removeAttributeNS(fullname.space, fullname.local);
   };
 }
 
 function attrConstant(name, value) {
-  return function () {
+  return function() {
     this.setAttribute(name, value);
   };
 }
 
 function attrConstantNS(fullname, value) {
-  return function () {
+  return function() {
     this.setAttributeNS(fullname.space, fullname.local, value);
   };
 }
 
 function attrFunction(name, value) {
-  return function () {
+  return function() {
     var v = value.apply(this, arguments);
-    if (v == null) this.removeAttribute(name);else this.setAttribute(name, v);
+    if (v == null) this.removeAttribute(name);
+    else this.setAttribute(name, v);
   };
 }
 
 function attrFunctionNS(fullname, value) {
-  return function () {
+  return function() {
     var v = value.apply(this, arguments);
-    if (v == null) this.removeAttributeNS(fullname.space, fullname.local);else this.setAttributeNS(fullname.space, fullname.local, v);
+    if (v == null) this.removeAttributeNS(fullname.space, fullname.local);
+    else this.setAttributeNS(fullname.space, fullname.local, v);
   };
 }
 
@@ -417,66 +407,84 @@ function selection_attr(name, value) {
 
   if (arguments.length < 2) {
     var node = this.node();
-    return fullname.local ? node.getAttributeNS(fullname.space, fullname.local) : node.getAttribute(fullname);
+    return fullname.local
+        ? node.getAttributeNS(fullname.space, fullname.local)
+        : node.getAttribute(fullname);
   }
 
-  return this.each((value == null ? fullname.local ? attrRemoveNS : attrRemove : typeof value === "function" ? fullname.local ? attrFunctionNS : attrFunction : fullname.local ? attrConstantNS : attrConstant)(fullname, value));
+  return this.each((value == null
+      ? (fullname.local ? attrRemoveNS : attrRemove) : (typeof value === "function"
+      ? (fullname.local ? attrFunctionNS : attrFunction)
+      : (fullname.local ? attrConstantNS : attrConstant)))(fullname, value));
 }
 
 function defaultView(node) {
-  return node.ownerDocument && node.ownerDocument.defaultView || // node is a Node
-  node.document && node // node is a Window
-  || node.defaultView; // node is a Document
+  return (node.ownerDocument && node.ownerDocument.defaultView) // node is a Node
+      || (node.document && node) // node is a Window
+      || node.defaultView; // node is a Document
 }
 
 function styleRemove(name) {
-  return function () {
+  return function() {
     this.style.removeProperty(name);
   };
 }
 
 function styleConstant(name, value, priority) {
-  return function () {
+  return function() {
     this.style.setProperty(name, value, priority);
   };
 }
 
 function styleFunction(name, value, priority) {
-  return function () {
+  return function() {
     var v = value.apply(this, arguments);
-    if (v == null) this.style.removeProperty(name);else this.style.setProperty(name, v, priority);
+    if (v == null) this.style.removeProperty(name);
+    else this.style.setProperty(name, v, priority);
   };
 }
 
 function selection_style(name, value, priority) {
-  return arguments.length > 1 ? this.each((value == null ? styleRemove : typeof value === "function" ? styleFunction : styleConstant)(name, value, priority == null ? "" : priority)) : styleValue(this.node(), name);
+  return arguments.length > 1
+      ? this.each((value == null
+            ? styleRemove : typeof value === "function"
+            ? styleFunction
+            : styleConstant)(name, value, priority == null ? "" : priority))
+      : styleValue(this.node(), name);
 }
 
 function styleValue(node, name) {
-  return node.style.getPropertyValue(name) || defaultView(node).getComputedStyle(node, null).getPropertyValue(name);
+  return node.style.getPropertyValue(name)
+      || defaultView(node).getComputedStyle(node, null).getPropertyValue(name);
 }
 
 function propertyRemove(name) {
-  return function () {
+  return function() {
     delete this[name];
   };
 }
 
 function propertyConstant(name, value) {
-  return function () {
+  return function() {
     this[name] = value;
   };
 }
 
 function propertyFunction(name, value) {
-  return function () {
+  return function() {
     var v = value.apply(this, arguments);
-    if (v == null) delete this[name];else this[name] = v;
+    if (v == null) delete this[name];
+    else this[name] = v;
   };
 }
 
 function selection_property(name, value) {
-  return arguments.length > 1 ? this.each((value == null ? propertyRemove : typeof value === "function" ? propertyFunction : propertyConstant)(name, value)) : this.node()[name];
+  return arguments.length > 1
+      ? this.each((value == null
+          ? propertyRemove : typeof value === "function"
+          ? propertyFunction
+          : propertyConstant)(name, value))
+      : this.node()[name];
 }
 
 function classArray(string) {
@@ -493,59 +501,49 @@ function ClassList(node) {
 }
 
 ClassList.prototype = {
-  add: function (name) {
+  add: function(name) {
     var i = this._names.indexOf(name);
-
     if (i < 0) {
       this._names.push(name);
-
       this._node.setAttribute("class", this._names.join(" "));
     }
   },
-  remove: function (name) {
+  remove: function(name) {
     var i = this._names.indexOf(name);
-
     if (i >= 0) {
       this._names.splice(i, 1);
-
       this._node.setAttribute("class", this._names.join(" "));
     }
   },
-  contains: function (name) {
+  contains: function(name) {
     return this._names.indexOf(name) >= 0;
   }
 };
 
 function classedAdd(node, names) {
-  var list = classList(node),
-      i = -1,
-      n = names.length;
-
+  var list = classList(node), i = -1, n = names.length;
   while (++i < n) list.add(names[i]);
 }
 
 function classedRemove(node, names) {
-  var list = classList(node),
-      i = -1,
-      n = names.length;
-
+  var list = classList(node), i = -1, n = names.length;
   while (++i < n) list.remove(names[i]);
 }
 
 function classedTrue(names) {
-  return function () {
+  return function() {
     classedAdd(this, names);
   };
 }
 
 function classedFalse(names) {
-  return function () {
+  return function() {
     classedRemove(this, names);
   };
 }
 
 function classedFunction(names, value) {
-  return function () {
+  return function() {
     (value.apply(this, arguments) ? classedAdd : classedRemove)(this, names);
   };
 }
@@ -554,16 +552,15 @@ function selection_classed(name, value) {
   var names = classArray(name + "");
 
   if (arguments.length < 2) {
-    var list = classList(this.node()),
-        i = -1,
-        n = names.length;
-
+    var list = classList(this.node()), i = -1, n = names.length;
     while (++i < n) if (!list.contains(names[i])) return false;
-
     return true;
   }
 
-  return this.each((typeof value === "function" ? classedFunction : value ? classedTrue : classedFalse)(names, value));
+  return this.each((typeof value === "function"
+      ? classedFunction : value
+      ? classedTrue
+      : classedFalse)(names, value));
 }
 
 function textRemove() {
@@ -571,20 +568,25 @@ function textRemove() {
 }
 
 function textConstant(value) {
-  return function () {
+  return function() {
     this.textContent = value;
   };
 }
 
 function textFunction(value) {
-  return function () {
+  return function() {
     var v = value.apply(this, arguments);
     this.textContent = v == null ? "" : v;
   };
 }
 
 function selection_text(value) {
-  return arguments.length ? this.each(value == null ? textRemove : (typeof value === "function" ? textFunction : textConstant)(value)) : this.node().textContent;
+  return arguments.length
+      ? this.each(value == null
+          ? textRemove : (typeof value === "function"
+          ? textFunction
+          : textConstant)(value))
+      : this.node().textContent;
 }
 
 function htmlRemove() {
@@ -592,20 +594,25 @@ function htmlRemove() {
 }
 
 function htmlConstant(value) {
-  return function () {
+  return function() {
     this.innerHTML = value;
   };
 }
 
 function htmlFunction(value) {
-  return function () {
+  return function() {
     var v = value.apply(this, arguments);
     this.innerHTML = v == null ? "" : v;
   };
 }
 
 function selection_html(value) {
-  return arguments.length ? this.each(value == null ? htmlRemove : (typeof value === "function" ? htmlFunction : htmlConstant)(value)) : this.node().innerHTML;
+  return arguments.length
+      ? this.each(value == null
+          ? htmlRemove : (typeof value === "function"
+          ? htmlFunction
+          : htmlConstant)(value))
+      : this.node().innerHTML;
 }
 
 function raise() {
@@ -626,7 +633,7 @@ function selection_lower() {
 
 function selection_append(name) {
   var create = typeof name === "function" ? name : creator(name);
-  return this.select(function () {
+  return this.select(function() {
     return this.appendChild(create.apply(this, arguments));
   });
 }
@@ -638,7 +645,7 @@ function constantNull() {
 function selection_insert(name, before) {
   var create = typeof name === "function" ? name : creator(name),
       select = before == null ? constantNull : typeof before === "function" ? before : selector(before);
-  return this.select(function () {
+  return this.select(function() {
     return this.insertBefore(create.apply(this, arguments), select.apply(this, arguments) || null);
   });
 }
@@ -653,14 +660,12 @@ function selection_remove() {
 }
 
 function selection_cloneShallow() {
-  var clone = this.cloneNode(false),
-      parent = this.parentNode;
+  var clone = this.cloneNode(false), parent = this.parentNode;
   return parent ? parent.insertBefore(clone, this.nextSibling) : clone;
 }
 
 function selection_cloneDeep() {
-  var clone = this.cloneNode(true),
-      parent = this.parentNode;
+  var clone = this.cloneNode(true), parent = this.parentNode;
   return parent ? parent.insertBefore(clone, this.nextSibling) : clone;
 }
 
@@ -669,40 +674,36 @@ function selection_clone(deep) {
 }
 
 function selection_datum(value) {
-  return arguments.length ? this.property("__data__", value) : this.node().__data__;
+  return arguments.length
+      ? this.property("__data__", value)
+      : this.node().__data__;
 }
 
 var filterEvents = {};
+
 var event = null;
 
 if (typeof document !== "undefined") {
   var element = document.documentElement;
-
   if (!("onmouseenter" in element)) {
-    filterEvents = {
-      mouseenter: "mouseover",
-      mouseleave: "mouseout"
-    };
+    filterEvents = {mouseenter: "mouseover", mouseleave: "mouseout"};
   }
 }
 
 function filterContextListener(listener, index, group) {
   listener = contextListener(listener, index, group);
-  return function (event) {
+  return function(event) {
     var related = event.relatedTarget;
-
-    if (!related || related !== this && !(related.compareDocumentPosition(this) & 8)) {
+    if (!related || (related !== this && !(related.compareDocumentPosition(this) & 8))) {
       listener.call(this, event);
     }
   };
 }
 
 function contextListener(listener, index, group) {
-  return function (event1) {
+  return function(event1) {
     var event0 = event; // Events can be reentrant (e.g., focus).
-
     event = event1;
-
     try {
       listener.call(this, this.__data__, index, group);
     } finally {
@@ -712,22 +713,17 @@ function contextListener(listener, index, group) {
 }
 
 function parseTypenames(typenames) {
-  return typenames.trim().split(/^|\s+/).map(function (t) {
-    var name = "",
-        i = t.indexOf(".");
+  return typenames.trim().split(/^|\s+/).map(function(t) {
+    var name = "", i = t.indexOf(".");
     if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
-    return {
-      type: t,
-      name: name
-    };
+    return {type: t, name: name};
   });
 }
 
 function onRemove(typename) {
-  return function () {
+  return function() {
     var on = this.__on;
     if (!on) return;
-
     for (var j = 0, i = -1, m = on.length, o; j < m; ++j) {
       if (o = on[j], (!typename.type || o.type === typename.type) && o.name === typename.name) {
         this.removeEventListener(o.type, o.listener, o.capture);
@@ -735,17 +731,15 @@ function onRemove(typename) {
         on[++i] = o;
       }
     }
-
-    if (++i) on.length = i;else delete this.__on;
+    if (++i) on.length = i;
+    else delete this.__on;
   };
 }
 
 function onAdd(typename, value, capture) {
   var wrap = filterEvents.hasOwnProperty(typename.type) ? filterContextListener : contextListener;
-  return function (d, i, group) {
-    var on = this.__on,
-        o,
-        listener = wrap(value, i, group);
+  return function(d, i, group) {
+    var on = this.__on, o, listener = wrap(value, i, group);
     if (on) for (var j = 0, m = on.length; j < m; ++j) {
       if ((o = on[j]).type === typename.type && o.name === typename.name) {
         this.removeEventListener(o.type, o.listener, o.capture);
@@ -755,26 +749,17 @@ function onAdd(typename, value, capture) {
       }
     }
     this.addEventListener(typename.type, listener, capture);
-    o = {
-      type: typename.type,
-      name: typename.name,
-      value: value,
-      listener: listener,
-      capture: capture
-    };
-    if (!on) this.__on = [o];else on.push(o);
+    o = {type: typename.type, name: typename.name, value: value, listener: listener, capture: capture};
+    if (!on) this.__on = [o];
+    else on.push(o);
   };
 }
 
 function selection_on(typename, value, capture) {
-  var typenames = parseTypenames(typename + ""),
-      i,
-      n = typenames.length,
-      t;
+  var typenames = parseTypenames(typename + ""), i, n = typenames.length, t;
 
   if (arguments.length < 2) {
     var on = this.node().__on;
-
     if (on) for (var j = 0, m = on.length, o; j < m; ++j) {
       for (i = 0, o = on[j]; i < n; ++i) {
         if ((t = typenames[i]).type === o.type && t.name === o.name) {
@@ -787,22 +772,8 @@ function selection_on(typename, value, capture) {
 
   on = value ? onAdd : onRemove;
   if (capture == null) capture = false;
-
   for (i = 0; i < n; ++i) this.each(on(typenames[i], value, capture));
-
   return this;
-}
-
-function customEvent(event1, listener, that, args) {
-  var event0 = event;
-  event1.sourceEvent = event;
-  event = event1;
-
-  try {
-    return listener.apply(that, args);
-  } finally {
-    event = event0;
-  }
 }
 
 function dispatchEvent(node, type, params) {
@@ -813,26 +784,29 @@ function dispatchEvent(node, type, params) {
     event = new event(type, params);
   } else {
     event = window.document.createEvent("Event");
-    if (params) event.initEvent(type, params.bubbles, params.cancelable), event.detail = params.detail;else event.initEvent(type, false, false);
+    if (params) event.initEvent(type, params.bubbles, params.cancelable), event.detail = params.detail;
+    else event.initEvent(type, false, false);
   }
 
   node.dispatchEvent(event);
 }
 
 function dispatchConstant(type, params) {
-  return function () {
+  return function() {
     return dispatchEvent(this, type, params);
   };
 }
 
 function dispatchFunction(type, params) {
-  return function () {
+  return function() {
     return dispatchEvent(this, type, params.apply(this, arguments));
   };
 }
 
 function selection_dispatch(type, params) {
-  return this.each((typeof params === "function" ? dispatchFunction : dispatchConstant)(type, params));
+  return this.each((typeof params === "function"
+      ? dispatchFunction
+      : dispatchConstant)(type, params));
 }
 
 var root = [null];
@@ -880,4 +854,5 @@ Selection.prototype = selection.prototype = {
   on: selection_on,
   dispatch: selection_dispatch
 };
-export { Selection as S, namespaces as a, selector as b, creator as c, selectorAll as d, event as e, styleValue as f, defaultView as g, customEvent as h, matcher as m, namespace as n, root as r, selection as s };
+
+export { Selection as S, selectorAll as a, selection as b, styleValue as c, event as e, matcher as m, namespace as n, root as r, selector as s };

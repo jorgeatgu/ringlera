@@ -1,1 +1,1 @@
-export { F as FormatSpecifier, f as format, d as formatDefaultLocale, b as formatLocale, a as formatPrefix, c as formatSpecifier, p as precisionFixed, e as precisionPrefix, g as precisionRound } from './common/precisionRound-d2fa8e39.js';
+export { f as format } from './common/defaultLocale-d858626c.js';
