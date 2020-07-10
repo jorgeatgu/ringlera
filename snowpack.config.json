@@ -8,7 +8,6 @@
   },
   "plugins": [
     "@snowpack/plugin-babel",
-    "@snowpack/plugin-webpack",
     "@snowpack/plugin-dotenv"
   ],
   "devOptions": {
