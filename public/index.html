@@ -11,7 +11,6 @@
 </head>
 <body>
   <header class="header-container">
-    
     <div class="header-container-center">
       <div class="header-container-image">
         <svg id="header-container-illustration" width="343" height="342" viewBox="0 0 343 342"xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -130,12 +129,19 @@
     </div>
   </header>
   <main class="ringlera-main">
-    <h2 class="ringlera-user">Hi. You're looking at the profile summary for <span id="ringlera-user-api"></span></h2>
+    <h2 class="ringlera-user">Hi. You're looking at the profile summary of <span id="ringlera-user-api"></span></h2>
     <div class="ringlera-metrics">
       <article class="ringlera-chart">
         <h3 class="chart-title">How many books have you read?</h3>
         <svg>
             <g class="ringlera-chart-container"></g>
+        </svg>
+      </article>
+
+      <article class="line-chart">
+        <h3 class="chart-title">How many books have you read?</h3>
+        <svg>
+            <g class="line-chart-container"></g>
         </svg>
       </article>
     </div>
@@ -166,7 +172,7 @@
               </div>
               <h4 id="ringlera-metrics-addictive-title-1" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-addictive-author-1"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-addictive-author-1"></h5>
             <p class="ringlera-metrics-element-text">You've finished the book in <strong><span id="ringlera-metrics-addictive-pages-1"></span></strong></p>
           </div>
           <div class="ringlera-metrics-element">
@@ -177,7 +183,7 @@
               </div>
               <h4 id="ringlera-metrics-addictive-title-2" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-addictive-author-2"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-addictive-author-2"></h5>
             <p class="ringlera-metrics-element-text">You've finished the book in <strong><span id="ringlera-metrics-addictive-pages-2"></span></strong></p>
           </div>
         </article>
@@ -198,7 +204,7 @@
               </div>
               <h4 id="ringlera-metrics-boring-title-0" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-boring-author-0"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-boring-author-0"></h5>
             <p class="ringlera-metrics-element-text">You've finished the book in <strong><span id="ringlera-metrics-boring-pages-0"></span></strong></p>
           </div>
           <div class="ringlera-metrics-element">
@@ -209,7 +215,7 @@
               </div>
               <h4 id="ringlera-metrics-boring-title-1" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-boring-author-1"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-boring-author-1"></h5>
             <p class="ringlera-metrics-element-text">You've finished the book in <strong><span id="ringlera-metrics-boring-pages-1"></span></strong></p>
           </div>
           <div class="ringlera-metrics-element">
@@ -220,7 +226,7 @@
               </div>
               <h4 id="ringlera-metrics-boring-title-2" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-boring-author-2"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-boring-author-2"></h5>
             <p class="ringlera-metrics-element-text">You've finished the book in <strong><span id="ringlera-metrics-boring-pages-2"></span></strong></p>
           </div>
         </article>
@@ -241,7 +247,7 @@
               </div>
               <h4 id="ringlera-metrics-fat-title-0" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-fat-author-0"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-fat-author-0"></h5>
             <p class="ringlera-metrics-element-text">The book has <strong><span id="ringlera-metrics-fat-pages-0"></span></strong> pages.</p>
           </div>
           <div class="ringlera-metrics-element">
@@ -252,7 +258,7 @@
               </div>
               <h4 id="ringlera-metrics-fat-title-1" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-fat-author-1"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-fat-author-1"></h5>
             <p class="ringlera-metrics-element-text">The book has <strong><span id="ringlera-metrics-fat-pages-1"></span></strong> pages.</p>
           </div>
           <div class="ringlera-metrics-element">
@@ -263,7 +269,7 @@
               </div>
               <h4 id="ringlera-metrics-fat-title-2" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-fat-author-2"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-fat-author-2"></h5>
             <p class="ringlera-metrics-element-text">The book has <strong><span id="ringlera-metrics-fat-pages-2"></span></strong> pages.</p>
           </div>
         </article>
@@ -272,8 +278,8 @@
     <section class="ringlera-metrics ringlera-metrics-element-short">
       <div class="ringlera-metrics-element-grid">
         <div class="ringlera-metrics-header">
-          <h2 class="ringlera-metrics-header-title">Short</h2>
-          <p class="ringlera-metrics-header-text">You hardly read it.</p>
+          <h2 class="ringlera-metrics-header-title">Short Book</h2>
+          <p class="ringlera-metrics-header-text">Shrt bk.</p>
         </div>
         <article class="ringlera-metrics-grid">
           <div class="ringlera-metrics-element">
@@ -284,7 +290,7 @@
               </div>
               <h4 id="ringlera-metrics-short-title-0" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-short-author-0"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-short-author-0"></h5>
             <p class="ringlera-metrics-element-text">The book has <strong><span id="ringlera-metrics-short-pages-0"></span></strong> pages.</p>
           </div>
           <div class="ringlera-metrics-element">
@@ -295,7 +301,7 @@
               </div>
               <h4 id="ringlera-metrics-short-title-1" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-short-author-1"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-short-author-1"></h5>
             <p class="ringlera-metrics-element-text">The book has <strong><span id="ringlera-metrics-short-pages-1"></span></strong> pages.</p>
           </div>
           <div class="ringlera-metrics-element">
@@ -306,7 +312,7 @@
               </div>
               <h4 id="ringlera-metrics-short-title-2" class="ringlera-metrics-element-title"></h4>
             </div>
-            <h5 id="ringlera-metrics-short-author-2"></h5>
+            <h5 class="ringlera-metrics-element-author" id="ringlera-metrics-short-author-2"></h5>
             <p class="ringlera-metrics-element-text">The book has <strong><span id="ringlera-metrics-short-pages-2"></span></strong> pages.</p>
           </div>
         </article>
