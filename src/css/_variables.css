@@ -11,10 +11,10 @@
 
 @font-face {
     font-family: 'Emberly';
-    src: url('Emberly-Bold.eot'); /* IE9 Compat Modes */
-    src: url('Emberly-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-         url('Emberly-Bold.woff') format('woff'), /* Modern Browsers */
-         url('Emberly-Bold.ttf') format('truetype'); /* Safari, Android, iOS */
+    src: url('Emberly-Bold.eot');
+    src: url('Emberly-Bold.eot?#iefix') format('embedded-opentype'),
+         url('Emberly-Bold.woff') format('woff'),
+         url('Emberly-Bold.ttf') format('truetype');
              font-style: normal;
     font-weight: normal;
     text-rendering: optimizeLegibility;

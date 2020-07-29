@@ -138,20 +138,27 @@ function createTimeLine(datos) {
 }
 
 function lineChart(dataz) {
-  console.log("dataz", dataz);
-  const margin = { top: 24, right: 24, bottom: 24, left: 24 };
+
+  const margin = { top: 24, right: 24, bottom: 32, left: 32 };
   let width = 0;
   let height = 0;
   const chart = d3.select('.line-chart');
   const svg = chart.select('svg');
   const scales = {};
 
-  function setupScales() {
-    const countX = d3.scaleTime().domain(d3.extent(dataz, (d) => d.day));
+  function setupScales(dataz) {
+    const countX = d3
+      .scaleBand()
+      .domain(dataz.map((d) => d.key))
 
-    const countY = d3.scaleLinear().domain([0, d3.max(dataz, (d) => d.pages)]);
+    const countY = d3
+      .scaleLinear()
+      .domain([0, d3.max(dataz, (d) => d.value)]);
 
-    scales.count = { x: countX, y: countY };
+    scales.count = {
+      x: countX,
+      y: countY
+    };
   };
 
   function setupElements() {
@@ -172,8 +179,8 @@ function lineChart(dataz) {
   function drawAxes(g) {
     const axisX = d3
       .axisBottom(scales.count.x)
-      .tickFormat(d3.format('d'))
-      .ticks(13);
+      .tickValues(scales.count.x.domain().filter((d, i) => !(i % 10)))
+      .tickPadding(11)
 
     g.select('.axis-x')
       .attr('transform', `translate(0,${height})`)
@@ -183,7 +190,8 @@ function lineChart(dataz) {
       .axisLeft(scales.count.y)
       .tickFormat(d3.format('d'))
       .ticks(5)
-      .tickSizeInner(-width);
+      .tickSizeInner(-width)
+      .tickPadding(5);
 
     g.select('.axis-y').call(axisY);
   };
@@ -195,32 +203,36 @@ function lineChart(dataz) {
     width = w - margin.left - margin.right;
     height = h - margin.top - margin.bottom;
 
-    svg.attr('width', w).attr('height', h);
+    svg
+      .attr('width', w).attr('height', h);
 
     const translate = `translate(${margin.left},${margin.top})`;
 
-    const g = svg.select('.line-chart-container');
+    const g = svg
+      .select('.line-chart-container');
 
     g.attr('transform', translate);
 
-    const line = d3
-      .line()
-      .x((d) => scales.count.x(d.day))
-      .y((d) => scales.count.y(d.pages));
-
     updateScales(width, height);
 
-    const container = chart.select('.line-chart-container-dos');
+    const container = chart
+      .select('.line-chart-container-dos');
 
-    const layer = container.selectAll('.line').data([dataz]);
+    const layer = container
+      .selectAll('.bar-vertical')
+      .data(dataz);
 
     const newLayer = layer
       .enter()
-      .append('path')
-      .attr('class', 'line')
-      .attr('stroke-width', '1.5');
+      .append('rect')
+      .attr('class', 'bar-vertical');
 
-    layer.merge(newLayer).attr('d', line);
+    layer
+      .merge(newLayer)
+      .attr('width', scales.count.x.bandwidth())
+      .attr('x', (d) => scales.count.x(d.key))
+      .attr('y', (d) => scales.count.y(d.value))
+      .attr('height', (d) => height - scales.count.y(d.value));
 
     drawAxes(g);
   };
@@ -230,14 +242,16 @@ function lineChart(dataz) {
   };
 
   function loadData() {
-    dataz.sort(function(a,b){
-      return a.day > b.day;
-    })
-    console.log("dataz", dataz);
-    const formatMonth = d3.timeFormat('%b-%Y');
     setupElements();
-    setupScales();
-    updateChart(dataz)
+    const parseDate = d3.timeFormat("%d-%m-%Y")
+    let datos = d3.nest()
+      .key(d => parseDate(d.day))
+      .sortKeys(d3.ascending)
+      .rollup((d) => d3.sum(d, (book) => book.pages))
+      .entries(dataz);
+
+    setupScales(datos);
+    updateChart(datos)
   };
 
   window.addEventListener('resize', resize);

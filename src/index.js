@@ -7,6 +7,7 @@ const { SNOWPACK_PUBLIC_GOODREADS_APP_KEY } = import.meta.env;
 let userGoodReads = '67134749';
 let userName = '';
 let booksClean = [];
+let booksCleanDuplicates = [];
 const spinnerDiv = document.getElementById('ringlera-loader')
 
 const config = {
@@ -107,13 +108,13 @@ function createNewObjectBooks(books) {
       const { title, pages, days, started, average, image, author, read } = item;
       const theDate = new Date(started);
       const theReadDate = new Date(read);
-      var monthRead = theReadDate.getMonth() + 1;
+      var monthRead = theReadDate.getMonth();
       var yearRead = theReadDate.getFullYear();
       const readDate = monthRead + "/" + yearRead
       let myNewDate = new Date(theDate);
       let getYearBook = myNewDate.getFullYear()
       myNewDate.setDate(myNewDate.getDate() + index);
-      booksClean.push({
+      booksCleanDuplicates.push({
         title: title,
         image: image,
         author: author,
@@ -121,22 +122,37 @@ function createNewObjectBooks(books) {
         d3data: readDate,
         year: +getYearBook,
         pages: +pages,
-        pagesReaded: +average,
+        pagesReaded: Math.round(+average),
         days: +days,
       });
     }
+
+    const { title, pages, days, started, average, image, author, read } = item;
+    const theDate = new Date(started);
+    const theReadDate = new Date(read);
+    let myNewDate = new Date(theDate);
+    let getYearBook = myNewDate.getFullYear()
+    myNewDate.setDate(myNewDate.getDate());
+    booksClean.push({
+      title: title,
+      image: image,
+      author: author,
+      day: myNewDate,
+      year: +getYearBook,
+      pages: +pages,
+      pagesReaded: Math.round(+average),
+      days: +days,
+    });
   }
 
-  createTimeLine(booksClean);
-  createMetrics(booksClean)
+  createTimeLine(booksCleanDuplicates);
+  createMetrics(booksCleanDuplicates)
+  lineChart(booksClean)
 }
 
 function createMetrics(data) {
 
   const cleanData = removeDuplicates(data)
-  console.log("cleanData", cleanData);
-
-  lineChart(cleanData)
 
   function getBookFaster() {
     const value = 'days'
