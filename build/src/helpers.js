@@ -51,4 +51,17 @@ function parseStrangeDateRailsAPI(string) {
   return third;
 }
 
-export { xmlToJson, parseStrangeDateRailsAPI };
+function removeDuplicates(data) {
+  let cleanData = data.reduce((acc, current) => {
+    const x = acc.find(item => item.title === current.title);
+
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+  return cleanData;
+}
+
+export { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates };

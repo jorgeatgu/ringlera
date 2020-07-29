@@ -1,11 +1,11 @@
 let arrayColors = ["rgb(96,28,136)", "rgb(125,162,193)", "rgb(17,105,102)", "rgb(47,221,206)", "rgb(15,94,176)", "rgb(242,176,246)", "rgb(199,98,142)", "rgb(233,55,168)", "rgb(87,80,90)", "rgb(163,105,219)"]; //And finally I can create a chart, happy ends...
 
-function createLineChart(datos) {
+function createTimeLine(datos) {
   const margin = {
     top: 24,
     right: 24,
     bottom: 24,
-    left: 48
+    left: 62
   };
   let width = 0;
   let height = 0;
@@ -16,7 +16,7 @@ function createLineChart(datos) {
 
   function setupScales() {
     const countX = d3.scaleTime().domain(d3.extent(datos, d => d.day));
-    const countY = d3.scaleLinear().domain([0, d3.max(datos, d => d.pages)]);
+    const countY = d3.scaleLinear().domain([0, d3.max(datos, d => d.pages * 1.25)]);
     scales.count = {
       x: countX,
       y: countY
@@ -50,7 +50,7 @@ function createLineChart(datos) {
     } = scales;
     const axisX = d3.axisBottom(x);
     g.select('.axis-x').attr('transform', `translate(0,${height})`).call(axisX);
-    const axisY = d3.axisLeft(y).tickFormat(d => `${d} pp.`).ticks(5).tickSizeInner(-width);
+    const axisY = d3.axisLeft(y).tickFormat(d => `${d} pp.`).ticks(5).tickPadding(7).tickSizeInner(-width);
     g.select('.axis-y').call(axisY);
   }
 
@@ -72,7 +72,7 @@ function createLineChart(datos) {
     dataComb.forEach(d => {
       container.append('path').attr('class', 'book').style('stroke', () => d.color = color(d.values[0].year)).attr('d', line(d.values)).on('mouseover', () => {
         const positionX = scales.count.x(d.values[0].day);
-        const tooltipMargin = 50;
+        const tooltipMargin = 75;
         const positionTooltip = `${positionX + tooltipMargin}px`;
         tooltip.transition().duration(300);
         tooltip.attr('class', 'tooltip tooltip-book');
@@ -100,4 +100,92 @@ function createLineChart(datos) {
   loadData();
 }
 
-export { createLineChart };
+function lineChart(dataz) {
+  const margin = {
+    top: 24,
+    right: 24,
+    bottom: 32,
+    left: 32
+  };
+  let width = 0;
+  let height = 0;
+  const chart = d3.select('.line-chart');
+  const svg = chart.select('svg');
+  const scales = {};
+
+  function setupScales(dataz) {
+    const countX = d3.scaleBand().domain(dataz.map(d => d.key));
+    const countY = d3.scaleLinear().domain([0, d3.max(dataz, d => d.value)]);
+    scales.count = {
+      x: countX,
+      y: countY
+    };
+  }
+
+  ;
+
+  function setupElements() {
+    const g = svg.select('.line-chart-container');
+    g.append('g').attr('class', 'axis axis-x');
+    g.append('g').attr('class', 'axis axis-y');
+    g.append('g').attr('class', 'line-chart-container-dos');
+  }
+
+  ;
+
+  function updateScales(width, height) {
+    scales.count.x.range([0, width]);
+    scales.count.y.range([height, 0]);
+  }
+
+  ;
+
+  function drawAxes(g) {
+    const axisX = d3.axisBottom(scales.count.x).tickValues(scales.count.x.domain().filter((d, i) => !(i % 10))).tickPadding(11);
+    g.select('.axis-x').attr('transform', `translate(0,${height})`).call(axisX);
+    const axisY = d3.axisLeft(scales.count.y).tickFormat(d3.format('d')).ticks(5).tickSizeInner(-width).tickPadding(5);
+    g.select('.axis-y').call(axisY);
+  }
+
+  ;
+
+  function updateChart(dataz) {
+    const w = chart.node().offsetWidth;
+    const h = 600;
+    width = w - margin.left - margin.right;
+    height = h - margin.top - margin.bottom;
+    svg.attr('width', w).attr('height', h);
+    const translate = `translate(${margin.left},${margin.top})`;
+    const g = svg.select('.line-chart-container');
+    g.attr('transform', translate);
+    updateScales(width, height);
+    const container = chart.select('.line-chart-container-dos');
+    const layer = container.selectAll('.bar-vertical').data(dataz);
+    const newLayer = layer.enter().append('rect').attr('class', 'bar-vertical');
+    layer.merge(newLayer).attr('width', scales.count.x.bandwidth()).attr('x', d => scales.count.x(d.key)).attr('y', d => scales.count.y(d.value)).attr('height', d => height - scales.count.y(d.value));
+    drawAxes(g);
+  }
+
+  ;
+
+  function resize() {
+    updateChart(dataz);
+  }
+
+  ;
+
+  function loadData() {
+    setupElements();
+    const parseDate = d3.timeFormat("%d-%m-%Y");
+    let datos = d3.nest().key(d => parseDate(d.day)).sortKeys(d3.ascending).rollup(d => d3.sum(d, book => book.pages)).entries(dataz);
+    setupScales(datos);
+    updateChart(datos);
+  }
+
+  ;
+  window.addEventListener('resize', resize);
+  loadData();
+}
+
+;
+export { createTimeLine, lineChart };
