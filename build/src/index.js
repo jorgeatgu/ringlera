@@ -1,14 +1,19 @@
 import __SNOWPACK_ENV__ from '/__snowpack__/env.js';
 import.meta.env = __SNOWPACK_ENV__;
 
-import { xmlToJson, parseStrangeDateRailsAPI } from "./helpers.js";
-import { createLineChart } from "./charts.js";
+import { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates } from "./helpers.js";
+import { createTimeLine, lineChart } from "./charts.js";
+/* eslint-disable */
+
 const {
   SNOWPACK_PUBLIC_GOODREADS_APP_KEY
 } = import.meta.env;
-let userGoodReads = '';
+/* eslint-enable */
+
+let userGoodReads = '67134749';
 let userName = '';
 let booksClean = [];
+let booksCleanDuplicates = [];
 const spinnerDiv = document.getElementById('ringlera-loader');
 const config = {
   method: 'GET',
@@ -106,33 +111,75 @@ function createNewObjectBooks(books) {
     //Iterate days to create an array of objects.
     for (let index = 0; index < item.days; index++) {
       const {
-        title,
-        pages,
-        days,
-        started,
-        average,
-        image,
-        author
+        title: _title,
+        pages: _pages,
+        days: _days,
+        started: _started,
+        average: _average,
+        image: _image,
+        author: _author,
+        read: _read
       } = item;
-      const theDate = new Date(started);
-      let myNewDate = new Date(theDate);
-      let getYearBook = myNewDate.getFullYear();
-      myNewDate.setDate(myNewDate.getDate() + index);
-      booksClean.push({
-        title: title,
-        image: image,
-        author: author,
-        day: myNewDate,
-        year: +getYearBook,
-        pages: +pages,
-        pagesReaded: +average,
-        days: +days
+
+      const _theDate = new Date(_started);
+
+      const _theReadDate = new Date(_read);
+
+      var monthRead = _theReadDate.getMonth();
+
+      var yearRead = _theReadDate.getFullYear();
+
+      const readDate = monthRead + "/" + yearRead;
+
+      let _myNewDate = new Date(_theDate);
+
+      let _getYearBook = _myNewDate.getFullYear();
+
+      _myNewDate.setDate(_myNewDate.getDate() + index);
+
+      booksCleanDuplicates.push({
+        title: _title,
+        image: _image,
+        author: _author,
+        day: _myNewDate,
+        d3data: readDate,
+        year: +_getYearBook,
+        pages: +_pages,
+        pagesReaded: Math.round(+_average),
+        days: +_days
       });
     }
+
+    const {
+      title,
+      pages,
+      days,
+      started,
+      average,
+      image,
+      author,
+      read
+    } = item;
+    const theDate = new Date(started);
+    const theReadDate = new Date(read);
+    let myNewDate = new Date(theDate);
+    let getYearBook = myNewDate.getFullYear();
+    myNewDate.setDate(myNewDate.getDate());
+    booksClean.push({
+      title: title,
+      image: image,
+      author: author,
+      day: myNewDate,
+      year: +getYearBook,
+      pages: +pages,
+      pagesReaded: Math.round(+average),
+      days: +days
+    });
   }
 
-  createLineChart(booksClean);
-  createMetrics(booksClean);
+  createTimeLine(booksCleanDuplicates);
+  createMetrics(booksCleanDuplicates);
+  lineChart(booksClean);
 }
 
 function createMetrics(data) {
@@ -207,13 +254,12 @@ function getMinValue(propertyValue, data) {
 }
 
 function getMaxValue(propertyValue, data) {
-  let sortData = data.sort((a, b) => a[propertyValue] > b[propertyValue]);
-  const results = Object.entries(sortData).slice(-3).map(entry => entry[1]);
+  let sortData = data.sort((a, b) => a[propertyValue] < b[propertyValue]);
+  const results = Object.entries(sortData).slice(0, 3).map(entry => entry[1]);
   return results;
 }
 
 function updateText(books) {
-  console.log("books", books);
   let index = 0;
 
   for (let book of books) {
@@ -241,17 +287,4 @@ function updateText(books) {
     authorBook.textContent = author || '';
     index++;
   }
-}
-
-function removeDuplicates(data) {
-  let cleanData = data.reduce((acc, current) => {
-    const x = acc.find(item => item.title === current.title);
-
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, []);
-  return cleanData;
 }
