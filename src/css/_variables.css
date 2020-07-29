@@ -1,6 +1,21 @@
 :root {
   --fontSystem: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Helvetica, sans-serif;
   --roboto: 'Roboto Condensed', sans-serif;
-  --title: 'Staatliches', cursive;
-  --text: 'Merriweather Sans', sans-serif;
+  --title: 'Emberly', serif;
+  --text: 'Muli', serif;
+  --bg-color: #F6D77C;
+  --txt-color: #1D1F20;
+  --white: #fff;
+  --black: #111;
+}
+
+@font-face {
+    font-family: 'Emberly';
+    src: url('Emberly-Bold.eot');
+    src: url('Emberly-Bold.eot?#iefix') format('embedded-opentype'),
+         url('Emberly-Bold.woff') format('woff'),
+         url('Emberly-Bold.ttf') format('truetype');
+             font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
 }
