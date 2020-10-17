@@ -176,8 +176,9 @@ function lineChart(dataz) {
 
   function loadData() {
     setupElements();
-    const parseDate = d3.timeFormat("%d-%m-%Y");
-    let datos = d3.nest().key(d => parseDate(d.day)).sortKeys(d3.ascending).rollup(d => d3.sum(d, book => book.pages)).entries(dataz);
+    const parseDate = d3.timeFormat("%m-%Y");
+    dataz.sort((a, b) => a.day - b.day);
+    let datos = d3.nest().key(d => parseDate(d.day)).rollup(d => d3.sum(d, book => book.pages)).entries(dataz);
     setupScales(datos);
     updateChart(datos);
   }
