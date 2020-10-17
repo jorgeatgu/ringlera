@@ -357,6 +357,7 @@ template {
   --txt-color: #1D1F20;
   --white: #fff;
   --black: #111;
+  --shadow: 0 2px 4px 0 rgba(0, 0, 0, .31),0 2px 4px 0 rgba(50, 50, 58, .2);
 }
 
 @font-face {
@@ -646,6 +647,18 @@ serif;
 ,
 serif;
   font-family: var(--text);
+  box-shadow: 0
+2px
+4px
+0
+rgba(0, 0, 0, .31)
+,
+0
+2px
+4px
+0
+rgba(50, 50, 58, .2);
+  box-shadow: var(--shadow);
 }
 
 .ringlera-user-icon {

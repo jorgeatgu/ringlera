@@ -9,6 +9,7 @@ let userName = '';
 let booksClean = [];
 let booksCleanDuplicates = [];
 const spinnerDiv = document.getElementById('ringlera-loader')
+const errorDiv = document.getElementById('ringlera-error')
 
 const config = {
   method: 'GET',
@@ -37,9 +38,17 @@ function getIdFromInput() {
       const parseString = new DOMParser().parseFromString(data, 'application/xml');
       const jsonFromXml = xmlToJson(parseString);
       cleanResponse(jsonFromXml);
-    });
+    })
+    .catch(err => apiError(err));
 
   getUserName()
+}
+
+function apiError(message) {
+  console.log("message", message);
+  console.log('mal')
+  spinnerDiv.style.display = 'none'
+  errorDiv.style.display = 'block'
 }
 
 function getUserName() {
@@ -77,7 +86,22 @@ function cleanResponse(json) {
     (book) => Object.keys(book.started_at).length !== 0 && Object.keys(book.read_at).length !== 0
   )
 
+  let booksNaN = books.filter((book) => Object.keys(book.book.num_pages).length === 0)
+
+  formatBooksNaN(booksNaN)
   formatBooksObject(filterBooksFinished);
+
+}
+
+function formatBooksNaN(booksNaN) {
+
+  booksNaN.forEach((d) => {
+    d.title = Object.values(d.book.title)[0];
+    d.link = Object.values(d.book.link)[0];
+    d.author = Object.values(d.book.authors.author.name)[0];
+  });
+
+  createListBooksNaN(booksNaN)
 }
 
 //The object is still a fucking shit, we are going to do some operations to clean and calculate
@@ -102,7 +126,6 @@ function formatBooksObject(books) {
 
 /*The MONOLITO only returns the day when the book started reading, and the day it ended. So we calculate the total reading days: d.days = Math.abs(d.read - d.started) / 86400000. For each day of reading we create a new object, now I can build a timeline.*/
 function createNewObjectBooks(books) {
-  /*booksClean = books.filter((book) => book.pages.length !== 0)*/
   //Iterate object
   for (let item of books) {
     //Iterate days to create an array of objects.
@@ -243,4 +266,25 @@ function updateText(books) {
     authorBook.textContent = author || ''
     index++
   }
+}
+
+function createListBooksNaN(books) {
+  console.log("books", books);
+
+  const container = document.getElementsByClassName('ringlera-metrics-books-nan-container')[0]
+
+  for (let book of books) {
+    const { title, link } = book
+    if (title && link) {
+      let bookElement = document.createElement('div')
+      bookElement.classList.add('ringlera-metrics-books-nan-element')
+      let bookTitle = document.createElement('a')
+      bookTitle.textContent = title || ''
+      bookTitle.href = link || ''
+
+      bookElement.appendChild(bookTitle)
+      container.appendChild(bookElement)
+    }
+  }
+
 }

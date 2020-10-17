@@ -93,14 +93,16 @@ body {
 }
 
 .ringlera-user {
-  background-color: #f1f1f1;
+  background-color: #6158E5;
   margin: 2rem auto;
-  width: 20rem;
+  width: max-content;
   border-radius: 4px;
-  color: #061529;
+  color: var(--white);
   padding: 1rem;
-  font-size: 2rem;
-  font-family: var(--text);
+  font-size: 1rem;
+  font-family: var(--roboto);
+  font-weight: normal;
+  box-shadow: var(--shadow);
 }
 
 .ringlera-user-icon {
@@ -303,4 +305,14 @@ body {
   padding-top: 2rem;
   background-color: var(--white);
   /* display: none; */
+}
+
+.ringlera-metrics-books-nan-element {
+  font-size: 1rem;
+  font-family: var(--text);
+  margin: .5rem 0;
+}
+
+.ringlera-metrics-books-nan-title {
+  font-family: var(--title);
 }

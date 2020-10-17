@@ -127,9 +127,12 @@
         <p class="loader-troll">The request is a bit slow, but no so much like George R.R. Martin writing The Winds of Winter...</p>
       </div>
     </div>
+    <div id="ringlera-error" class="ringlera-spinner">
+      <p>An error ocurred</p>
+    </div>
   </header>
   <main class="ringlera-main">
-    <h2 class="ringlera-user">Hi. You're looking at the profile summary of <span id="ringlera-user-api"></span></h2>
+    <h2 class="ringlera-user">👋  You're looking at the profile summary of <b id="ringlera-user-api"></b></h2>
     <div class="ringlera-metrics">
       <article class="ringlera-chart">
         <h3 class="chart-title">How many books have you read?</h3>
@@ -317,6 +320,15 @@
           </div>
         </article>
       </div>
+    </section>
+    <section class="ringlera-metrics ringlera-metrics-books-nan">
+      <article class="ringlera-chart ringlera-metrics-books-nan-container">
+
+        <h4 class="ringlera-metrics-books-nan-title">⚠️ Warning!</h4>
+        <p class="header-container-text">
+          Some books don't have a number of pages at the GoodReads API, so they have been excluded from the statistics. Perhaps, you can solve this error if you edit in GoodReads and add the number of pages. Here's the list.
+        </p>
+      </article>
     </section>
   </main>
   <footer class="footer">
