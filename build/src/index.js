@@ -106,6 +106,7 @@ function formatBooksObject(books) {
 
 
 function createNewObjectBooks(books) {
+  /*booksClean = books.filter((book) => book.pages.length !== 0)*/
   //Iterate object
   for (let item of books) {
     //Iterate days to create an array of objects.

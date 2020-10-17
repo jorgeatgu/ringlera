@@ -82,6 +82,7 @@ function cleanResponse(json) {
 
 //The object is still a fucking shit, we are going to do some operations to clean and calculate
 function formatBooksObject(books) {
+
   books.forEach((d) => {
     d.title = Object.values(d.book.title)[0];
     d.pages = Object.values(d.book.num_pages)[0];
@@ -101,6 +102,7 @@ function formatBooksObject(books) {
 
 /*The MONOLITO only returns the day when the book started reading, and the day it ended. So we calculate the total reading days: d.days = Math.abs(d.read - d.started) / 86400000. For each day of reading we create a new object, now I can build a timeline.*/
 function createNewObjectBooks(books) {
+  /*booksClean = books.filter((book) => book.pages.length !== 0)*/
   //Iterate object
   for (let item of books) {
     //Iterate days to create an array of objects.
