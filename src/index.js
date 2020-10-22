@@ -39,14 +39,11 @@ function getIdFromInput() {
       const jsonFromXml = xmlToJson(parseString);
       cleanResponse(jsonFromXml);
     })
-    .catch(err => apiError(err));
 
   getUserName()
 }
 
 function apiError(message) {
-  console.log("message", message);
-  console.log('mal')
   spinnerDiv.style.display = 'none'
   errorDiv.style.display = 'block'
 }
@@ -68,9 +65,12 @@ function getUserName() {
       const jsonFromXml = xmlToJson(parseString);
       const { GoodreadsResponse: { user: { name } } } = jsonFromXml
 
-      userName = Object.values(name)
-      const setName = document.getElementById('ringlera-user-api')
-      setName.textContent = userName || ''
+      if (jsonFromXml) {
+        userName = Object.values(name)
+        const setName = document.getElementById('ringlera-user-api')
+        setName.textContent = userName || ''
+      }
+
     });
 }
 
@@ -148,7 +148,7 @@ function createNewObjectBooks(books) {
         year: +getYearBook,
         pages: +pages,
         pagesReaded: Math.round(+average),
-        days: +days,
+        days: Math.round(+days)
       });
     }
 
@@ -166,7 +166,7 @@ function createNewObjectBooks(books) {
       year: +getYearBook,
       pages: +pages,
       pagesReaded: Math.round(+average),
-      days: +days,
+      days: Math.round(+days)
     });
   }
 
@@ -225,6 +225,7 @@ function createMetrics(data) {
       });
     }
 
+    console.log("booksProperties", booksProperties);
     return booksProperties
   }
 
@@ -253,6 +254,7 @@ function updateText(books) {
 
     let titleBook = document.getElementById(`ringlera-metrics-${sectionTitle}-title-${index}`)
     let pagesBook = document.getElementById(`ringlera-metrics-${sectionTitle}-pages-${index}`)
+    let extraBook = document.getElementById(`ringlera-metrics-${sectionTitle}-EXTRA-${index}`)
     let authorBook = document.getElementById(`ringlera-metrics-${sectionTitle}-author-${index}`)
 
     if (sectionTitle === 'short' || sectionTitle === 'fat') {
@@ -269,8 +271,6 @@ function updateText(books) {
 }
 
 function createListBooksNaN(books) {
-  console.log("books", books);
-
   const container = document.getElementsByClassName('ringlera-metrics-books-nan-container')[0]
 
   for (let book of books) {

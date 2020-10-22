@@ -77,6 +77,13 @@ body {
 .chart-title {
   font-size: 1.5rem;
   font-family: var(--title);
+  margin-bottom: .25rem;
+}
+
+.chart-text {
+  font-size: 1rem;
+  margin-top: .25rem;
+  font-family: var(--text);
 }
 
 .header-container-user-btn {

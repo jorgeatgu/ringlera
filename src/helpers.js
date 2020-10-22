@@ -51,7 +51,7 @@ function parseStrangeDateRailsAPI(string) {
 }
 
 function removeDuplicates(data) {
-  let cleanData = data.reduce((acc, current) => {
+  let cleanData = data.filter((book) => book.pages > 0).reduce((acc, current) => {
     const x = acc.find(item => item.title === current.title);
     if (!x) {
       return acc.concat([current]);
