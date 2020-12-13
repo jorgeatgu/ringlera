@@ -62,5 +62,11 @@ function removeDuplicates(data) {
   return cleanData
 }
 
+function getTotalValues(arr, valueKey) {
+  let filteredBookPagesNULL = arr.filter(book => book.pages)
+  let total = filteredBookPagesNULL.reduce((prev, cur) => prev + cur[valueKey], 0);
+  return total
+}
 
-export { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates }
+
+export { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates, getTotalValues }

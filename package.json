@@ -44,5 +44,8 @@
     "snowpack": "2.6.4",
     "stylelint": "13.7.2",
     "uglify-es": "3.3.9"
+  },
+  "dependencies": {
+    "tabulator-tables": "^4.8.4"
   }
 }

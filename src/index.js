@@ -1,77 +1,50 @@
-import { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates } from "./helpers.js";
-import { createTimeLine, lineChart } from "./charts.js";
+import { getUserBooks, getUserInfo } from "./factory.js";
+import { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates, getTotalValues } from "./helpers.js";
+import { createTimeLine, barChartPages, scatterBooks, sliderD3 } from "./charts.js";
 
 /* eslint-disable */
 const { SNOWPACK_PUBLIC_GOODREADS_APP_KEY } = import.meta.env;
 /* eslint-enable */
-let userGoodReads = '67134749';
+let userGoodReads = '';
 let userName = '';
 let booksClean = [];
 let booksCleanDuplicates = [];
+let allBooks = [];
 const spinnerDiv = document.getElementById('ringlera-loader')
 const errorDiv = document.getElementById('ringlera-error')
+const closeButton = document.getElementById('ringlera-error-close-button')
 
-const config = {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'text/plain',
-    'X-Requested-With': 'XMLHttpRequest',
-  },
-};
-
-document.getElementById('ringlera-btn-build').addEventListener("click", getIdFromInput);
-
-function getIdFromInput() {
-  userGoodReads = document.getElementById('ringlera-input-user').value
-  spinnerDiv.style.display = 'block'
-  const url = `https://cors-anywhere.herokuapp.com/https://www.goodreads.com/review/list/${userGoodReads}.xml?key=${SNOWPACK_PUBLIC_GOODREADS_APP_KEY}&v=2&v=2&shelf=ALL&page=1&per_page=200`;
-
-  //Get data from the API-MONOLITO-XML. We are in 2020, right?
-  async function getUserAsync() {
-    let response = await fetch(url, config);
-    let data = await response.text()
-    return data;
-  }
-
-  getUserAsync()
+document.getElementById('ringlera-btn-build').addEventListener("click", async => {
+  getUserBooks()
     .then(data => {
       const parseString = new DOMParser().parseFromString(data, 'application/xml');
       const jsonFromXml = xmlToJson(parseString);
-      cleanResponse(jsonFromXml);
+      cleanResponse(jsonFromXml)
     })
 
-  getUserName()
-}
-
-function apiError(message) {
-  spinnerDiv.style.display = 'none'
-  errorDiv.style.display = 'block'
-}
-
-function getUserName() {
-  userGoodReads = document.getElementById('ringlera-input-user').value
-  const userUrl = `https://cors-anywhere.herokuapp.com/https://www.goodreads.com/user/show/${userGoodReads}.xml?key=${SNOWPACK_PUBLIC_GOODREADS_APP_KEY}`
-
-  //Get data from the API-MONOLITO-XML. We are in 2020, right?
-  async function getUserAsync() {
-    let response = await fetch(userUrl, config);
-    let data = await response.text()
-    return data;
-  }
-
-  getUserAsync()
+  /*getUserInfo()
     .then(data => {
       const parseString = new DOMParser().parseFromString(data, 'application/xml');
       const jsonFromXml = xmlToJson(parseString);
-      const { GoodreadsResponse: { user: { name } } } = jsonFromXml
+      const { GoodreadsResponse: { user: { name, joined = '' } } } = jsonFromXml
 
       if (jsonFromXml) {
-        userName = Object.values(name)
+        userName = Object.values(name) || ''
+        const userJoinedDate = Object.values(joined)
         const setName = document.getElementById('ringlera-user-api')
-        setName.textContent = userName || ''
+        const dateJoined = document.getElementById('ringlera-user-api-joined')
+        setName.textContent = userName
+        dateJoined.textContent = userJoinedDate
       }
+    });*/
+});
 
-    });
+closeButton.addEventListener("click", closeError);
+
+function closeError() {
+  errorDiv.style.display = 'none'
+  userGoodReads = document.getElementById('ringlera-input-user')
+  userGoodReads.value = ''
 }
 
 //I only want the books that the user has finished reading
@@ -82,26 +55,81 @@ function cleanResponse(json) {
     },
   } = json;
 
-  let filterBooksFinished = books.filter(
+  let filterBooksStartedFinished = books.filter(
     (book) => Object.keys(book.started_at).length !== 0 && Object.keys(book.read_at).length !== 0
   )
 
-  let booksNaN = books.filter((book) => Object.keys(book.book.num_pages).length === 0)
+  let filterBooksFinished = books.filter(
+    (book) => Object.keys(book.read_at).length !== 0
+  )
 
-  formatBooksNaN(booksNaN)
-  formatBooksObject(filterBooksFinished);
+  formatBooksObject(filterBooksStartedFinished);
+  formatAllBooks(filterBooksFinished);
 
 }
 
-function formatBooksNaN(booksNaN) {
-
-  booksNaN.forEach((d) => {
+function formatAllBooks(books) {
+  books.forEach((d) => {
     d.title = Object.values(d.book.title)[0];
-    d.link = Object.values(d.book.link)[0];
     d.author = Object.values(d.book.authors.author.name)[0];
+    d.read = parseStrangeDateRailsAPI(d.read_at);
+    d.pages = Object.values(d.book.num_pages)[0];
   });
 
-  createListBooksNaN(booksNaN)
+  for (let item of books) {
+    const { title, pages, author, read } = item;
+    const theDate = new Date(read);
+    let myNewDate = new Date(theDate);
+    let getYearBook = myNewDate.getFullYear()
+    myNewDate.setDate(myNewDate.getDate());
+    allBooks.push({
+      title: title,
+      author: author,
+      read: myNewDate,
+      year: +getYearBook,
+      pages: +pages || 0
+    });
+  }
+
+  const totalPages = getTotalValues(allBooks, 'pages');
+  const totalBooks = allBooks.length;
+  const userBooks = document.getElementById('ringlera-user-api-books')
+  const userPages = document.getElementById('ringlera-user-api-pages')
+
+  userBooks.textContent = totalBooks
+  userPages.textContent = totalPages
+
+  scatterBooks(allBooks)
+  createTableAllBooks(books)
+
+}
+
+function createTableAllBooks(books) {
+  let tableBooks = []
+  books.forEach((d) => {
+    d.title = Object.values(d.book.title);
+    d.author = Object.values(d.book.authors.author.name);
+    d.read = parseStrangeDateRailsAPI(d.read_at);
+    d.pages = Object.values(d.book.num_pages);
+    d.publication = Object.values(d.book.publication_year)
+    d.rating = Object.values(d.book.average_rating)
+  });
+
+  for (let item of books) {
+    const { title, pages, author, read, publication, rating } = item;
+    const theDate = new Date(read);
+    let myNewDate = new Date(theDate);
+    let getYearBook = `${myNewDate.getMonth() + 1}/${myNewDate.getFullYear()}`
+    myNewDate.setDate(myNewDate.getDate());
+    tableBooks.push({
+      title: title,
+      author: author,
+      read: getYearBook,
+      pages: +pages || 0,
+      publication: publication,
+      rating: rating
+    });
+  }
 }
 
 //The object is still a fucking shit, we are going to do some operations to clean and calculate
@@ -129,8 +157,8 @@ function createNewObjectBooks(books) {
   //Iterate object
   for (let item of books) {
     //Iterate days to create an array of objects.
+    const { title, pages, days, started, average, image, author, read } = item;
     for (let index = 0; index < item.days; index++) {
-      const { title, pages, days, started, average, image, author, read } = item;
       const theDate = new Date(started);
       const theReadDate = new Date(read);
       var monthRead = theReadDate.getMonth();
@@ -152,7 +180,6 @@ function createNewObjectBooks(books) {
       });
     }
 
-    const { title, pages, days, started, average, image, author, read } = item;
     const theDate = new Date(started);
     const theReadDate = new Date(read);
     let myNewDate = new Date(theDate);
@@ -172,7 +199,8 @@ function createNewObjectBooks(books) {
 
   createTimeLine(booksCleanDuplicates);
   createMetrics(booksCleanDuplicates)
-  lineChart(booksClean)
+  barChartPages(booksClean)
+  sliderD3(booksClean)
 }
 
 function createMetrics(data) {
@@ -225,7 +253,6 @@ function createMetrics(data) {
       });
     }
 
-    console.log("booksProperties", booksProperties);
     return booksProperties
   }
 
@@ -268,23 +295,4 @@ function updateText(books) {
     authorBook.textContent = author || ''
     index++
   }
-}
-
-function createListBooksNaN(books) {
-  const container = document.getElementsByClassName('ringlera-metrics-books-nan-container')[0]
-
-  for (let book of books) {
-    const { title, link } = book
-    if (title && link) {
-      let bookElement = document.createElement('div')
-      bookElement.classList.add('ringlera-metrics-books-nan-element')
-      let bookTitle = document.createElement('a')
-      bookTitle.textContent = title || ''
-      bookTitle.href = link || ''
-
-      bookElement.appendChild(bookTitle)
-      container.appendChild(bookElement)
-    }
-  }
-
 }

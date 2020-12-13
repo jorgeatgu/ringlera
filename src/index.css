@@ -2,6 +2,7 @@
 @import '_variables';
 @import '_loader';
 @import '_footer';
+@import '_table';
 
 * {
   box-sizing: border-box;
@@ -97,19 +98,24 @@ body {
   border-bottom-right-radius: 4px;
   font-weight: 600;
   letter-spacing: 1px;
+  cursor: pointer;
+  transition: background-color .3s ease-in;
+
+  &:hover {
+    background-color: var(--black);
+  }
 }
 
 .ringlera-user {
-  background-color: #6158E5;
+  background-color: #b8eae8;
   margin: 2rem auto;
   width: max-content;
   border-radius: 4px;
-  color: var(--white);
+  color: var(--black);
   padding: 1rem;
   font-size: 1rem;
   font-family: var(--roboto);
   font-weight: normal;
-  box-shadow: var(--shadow);
 }
 
 .ringlera-user-icon {
@@ -117,12 +123,15 @@ body {
   height: 3.5rem;
 }
 
-.ringlera-chart,
+.ringlera-chart-all,
+.ringlera-chart-read,
 .line-chart {
   position: relative;
   width: 60vw;
   margin: 0 auto;
+  padding: 2rem 0;
   display: block;
+
   .domain {
     stroke: none;
   }
@@ -138,6 +147,7 @@ body {
     stroke-width: 1px;
     stroke-dasharray: 3px 3px;
   }
+
   .book {
     stroke-width: 8px;
   }
@@ -170,13 +180,18 @@ body {
     max-width: 100%;
     color: #341268;
     margin: 0;
-    + p {
+
+    +p {
       display: none;
     }
   }
 
   .bar-vertical {
-    fill: #213835;
+    fill: #7DA2C1;
+  }
+
+  .scatter-circles {
+    fill: #A02745;
   }
 }
 
@@ -311,7 +326,7 @@ body {
 .ringlera-main {
   padding-top: 2rem;
   background-color: var(--white);
-  /* display: none; */
+  display: none;
 }
 
 .ringlera-metrics-books-nan-element {
@@ -322,4 +337,58 @@ body {
 
 .ringlera-metrics-books-nan-title {
   font-family: var(--title);
+}
+
+.ringlera-spinner-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--white);
+  font-family: var(--text);
+}
+
+#ringlera-error-close-button {
+  padding: 1rem;
+  font-size: 1rem;
+  background-color: var(--white);
+  color: var(--black);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#slider .track {
+  stroke: var(--black);
+  stroke-width: 2px;
+}
+
+#slider .track-overlay {
+  stroke: #ccc;
+  stroke-width: 40px;
+  stroke-opacity: 0;
+  cursor: crosshair;
+}
+
+#slider .handle {
+  stroke: var(--black);
+}
+
+#slider .track-overlay,
+#slider .track {
+  stroke-linecap: round;
+}
+
+.chart-label-pages {
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-family: var(--text);
+  padding: .5rem;
+}
+
+#table-all-books {
+  font-family: var(--text);
+}
+
+.ringlera-metrics-table-all-books {
+  max-width: 80%;
 }
