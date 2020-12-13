@@ -52,7 +52,7 @@ function parseStrangeDateRailsAPI(string) {
 }
 
 function removeDuplicates(data) {
-  let cleanData = data.reduce((acc, current) => {
+  let cleanData = data.filter(book => book.pages > 0).reduce((acc, current) => {
     const x = acc.find(item => item.title === current.title);
 
     if (!x) {
@@ -64,4 +64,10 @@ function removeDuplicates(data) {
   return cleanData;
 }
 
-export { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates };
+function getTotalValues(arr, valueKey) {
+  let filteredBookPagesNULL = arr.filter(book => book.pages);
+  let total = filteredBookPagesNULL.reduce((prev, cur) => prev + cur[valueKey], 0);
+  return total;
+}
+
+export { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates, getTotalValues };
