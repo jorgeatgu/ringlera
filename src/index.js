@@ -2,9 +2,6 @@ import { getUserBooks, getUserInfo } from "./factory.js";
 import { xmlToJson, parseStrangeDateRailsAPI, removeDuplicates, getTotalValues } from "./helpers.js";
 import { createTimeLine, barChartPages, scatterBooks, sliderD3 } from "./charts.js";
 
-/* eslint-disable */
-const { SNOWPACK_PUBLIC_GOODREADS_APP_KEY } = import.meta.env;
-/* eslint-enable */
 let userGoodReads = '';
 let userName = '';
 let booksClean = [];
@@ -22,7 +19,7 @@ document.getElementById('ringlera-btn-build').addEventListener("click", async =>
       cleanResponse(jsonFromXml)
     })
 
-  /*getUserInfo()
+  getUserInfo()
     .then(data => {
       const parseString = new DOMParser().parseFromString(data, 'application/xml');
       const jsonFromXml = xmlToJson(parseString);
@@ -36,7 +33,7 @@ document.getElementById('ringlera-btn-build').addEventListener("click", async =>
         setName.textContent = userName
         dateJoined.textContent = userJoinedDate
       }
-    });*/
+    });
 });
 
 closeButton.addEventListener("click", closeError);
